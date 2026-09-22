@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">FoodBridge</string>
+    <!-- Replace with a real key from Google Cloud Console before running the Map View screen -->
+    <string name="maps_api_key">AIzaSyCKLM-IjGV5k15xv290HnywXLWZiru0tMM</string>
+</resources>
