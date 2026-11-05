@@ -6,7 +6,7 @@ OPSC6312 Portfolio of Evidence (POE) — Part 3 Final Submission.
 Hope Malatjie (ST10444867) · Chantal Mafa (ST10444319) · Keabetswe Modiba (ST10438507) · Karabo Mojapelo (ST10436116)
 The IIE Rosebank International College
 
-> 📹 **Demo Video Presentation:** `ADD YOUR UNLISTED YOUTUBE LINK HERE BEFORE SUBMITTING`
+> 📹 **Demo Video Presentation:** https://1drv.ms/v/c/586D96C3CFC51D3D/IQBl63WXW-eNQJNMQq8ksOCgAaXdXXv-XdpXznGpcYbXAy8
 
 ---
 
@@ -20,13 +20,13 @@ In full compliance with the lecturer's feedback, **Jetpack Compose has been comp
 
 FoodBridge connects surplus food from donors (restaurants, grocery stores, households) with community recipients and shelters before it goes to waste.
 
-- **User Registration & Login (FR-1)**: Secured authentication flow supporting Email/Password with password encryption and **Single Sign-On (SSO)** via Google Sign-In.
-- **Surplus Food Feed (FR-3)**: Browse food listings in a responsive XML `RecyclerView` with real-time category filtering, search, and swipe-to-refresh capabilities.
-- **Nearby Food Map (FR-3)**: Google Maps SDK integration (`MapFragment` + `MapView`) displaying interactive markers for nearby surplus food listings.
-- **Post Surplus Food (FR-2)**: Donors upload food details, quantities, pickup windows, location coordinates, and photos via Coil image loader.
-- **Listing Details & Reservation (FR-4)**: View complete listing info, donor badges, countdown pickup windows, and reserve listings atomically.
-- **In-App Messaging (FR-5)**: Real-time chat between recipient and donor scoped to individual food reservations.
-- **Impact Profile & Settings (FR-6)**: Track meals saved, CO2 avoided (kg), and access app settings.
+- **1. User Registration & Login (FR-1)**: Secured authentication flow supporting Email/Password with password encryption and **Single Sign-On (SSO)** via Google Sign-In.
+- **2. Surplus Food Feed (FR-3)**: Browse food listings in a responsive XML `RecyclerView` with real-time category filtering, search, and swipe-to-refresh capabilities.
+- **3. Nearby Food Map (FR-3)**: Google Maps SDK integration (`MapFragment` + `MapView`) displaying interactive markers for nearby surplus food listings.
+- **4. Post Surplus Food (FR-2)**: Donors upload food details, quantities, pickup windows, location coordinates, and photos via Coil image loader.
+- **5. Listing Details, Reservation & Collection (FR-4)**: View complete listing info, donor badges, countdown pickup windows, reserve listings, and delete/mark collected items.
+- **6. In-App Messaging Chat (FR-5)**: Real-time chat between recipient and donor scoped to individual food reservations.
+- **7. Impact Profile & Settings (FR-6)**: Track meals saved, CO2 avoided (kg), view user account profile details, switch languages, and manage settings.
 - **Offline Mode with Room Synchronization (PoE Only)**: Local SQLite/Room database (`FoodBridgeDatabase`, `ListingDao`, `ReservationDao`) caches listings locally when offline and synchronizes pending actions when connection is restored.
 - **Multi-Language Support (PoE Only)**: Full localization for three languages including two South African languages:
   - **English** (Default: `res/values/strings.xml`)
