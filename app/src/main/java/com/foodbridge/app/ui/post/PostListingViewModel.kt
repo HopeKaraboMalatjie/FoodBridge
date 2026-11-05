@@ -2,6 +2,7 @@ package com.foodbridge.app.ui.post
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.foodbridge.app.data.model.FoodListing
 import com.foodbridge.app.data.model.ListingCategory
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/** FR-2: post a surplus food listing (photo, title, category, quantity, pickup window). */
 class PostListingViewModel(
     private val listingRepository: ListingRepository,
     private val storageRepository: StorageRepository
@@ -67,6 +67,16 @@ class PostListingViewModel(
             listingRepository.createListing(request)
                 .onSuccess { _postState.value = UiState.Success(it) }
                 .onFailure { _postState.value = UiState.Error(it.message ?: "Could not create listing") }
+        }
+    }
+
+    class Factory(
+        private val listingRepository: ListingRepository,
+        private val storageRepository: StorageRepository
+    ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return PostListingViewModel(listingRepository, storageRepository) as T
         }
     }
 }

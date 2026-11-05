@@ -1,6 +1,7 @@
 package com.foodbridge.app.ui.impact
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.foodbridge.app.data.model.ImpactStats
 import com.foodbridge.app.data.repository.ImpactRepository
@@ -10,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/** FR-6: My Impact / Profile — gamified stats that update after each collection. */
 class ImpactViewModel(private val repository: ImpactRepository) : ViewModel() {
 
     private val _impactState = MutableStateFlow<UiState<ImpactStats>>(UiState.Loading)
@@ -22,6 +22,13 @@ class ImpactViewModel(private val repository: ImpactRepository) : ViewModel() {
             repository.getImpact(userId)
                 .onSuccess { _impactState.value = UiState.Success(it) }
                 .onFailure { _impactState.value = UiState.Error(it.message ?: "Could not load impact stats") }
+        }
+    }
+
+    class Factory(private val repository: ImpactRepository) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ImpactViewModel(repository) as T
         }
     }
 }

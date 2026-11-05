@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home_feed"
+        android:icon="@drawable/ic_home"
+        android:title="@string/home_title" />
+    <item
+        android:id="@+id/nav_map_view"
+        android:icon="@drawable/ic_map"
+        android:title="@string/map_title" />
+    <item
+        android:id="@+id/nav_post_listing"
+        android:icon="@drawable/ic_add"
+        android:title="@string/post_title" />
+    <item
+        android:id="@+id/nav_impact_profile"
+        android:icon="@drawable/ic_profile"
+        android:title="@string/impact_title" />
+</menu>

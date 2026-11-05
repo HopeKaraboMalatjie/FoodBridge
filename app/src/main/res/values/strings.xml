@@ -1,5 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FoodBridge</string>
-    <!-- Replace with a real key from Google Cloud Console before running the Map View screen -->
     <string name="maps_api_key">AIzaSyCKLM-IjGV5k15xv290HnywXLWZiru0tMM</string>
+    <string name="default_web_client_id">1083920192301-mockclientid.apps.googleusercontent.com</string>
+
+    <!-- Auth -->
+    <string name="login_title">Welcome to FoodBridge</string>
+    <string name="login_subtitle">Connecting excess food with local communities</string>
+    <string name="email_hint">Email Address</string>
+    <string name="password_hint">Password</string>
+    <string name="name_hint">Full Name</string>
+    <string name="login_button">Log In</string>
+    <string name="google_sso_button">Sign in with Google</string>
+    <string name="register_button">Create Account</string>
+    <string name="no_account_prompt">Don\'t have an account? Register</string>
+    <string name="have_account_prompt">Already have an account? Log In</string>
+    <string name="role_prompt">Select Role</string>
+    <string name="role_donor">Donor (Restaurant / Grocery)</string>
+    <string name="role_recipient">Recipient (Shelter / Individual)</string>
+
+    <!-- Home Feed -->
+    <string name="home_title">Surplus Food Feed</string>
+    <string name="search_hint">Search listings…</string>
+    <string name="all_categories">All</string>
+    <string name="cat_prepared">Prepared Meals</string>
+    <string name="cat_produce">Fresh Produce</string>
+    <string name="cat_bakery">Bakery</string>
+    <string name="cat_canned">Canned Goods</string>
+    <string name="no_listings">No food listings available.</string>
+    <string name="expiry_label">Pickup until: %1$s</string>
+    <string name="distance_label">%1$.1f km away</string>
+    <string name="reserve_now">Reserve Food</string>
+    <string name="status_available">Available</string>
+    <string name="status_reserved">Reserved</string>
+
+    <!-- Map View -->
+    <string name="map_title">Nearby Food Map</string>
+
+    <!-- Post Listing -->
+    <string name="post_title">Donate Surplus Food</string>
+    <string name="listing_title_hint">Food Item Title</string>
+    <string name="category_hint">Category</string>
+    <string name="quantity_hint">Quantity (e.g. 5 kg / 10 meals)</string>
+    <string name="description_hint">Description &amp; Allergen notes</string>
+    <string name="pickup_start_hint">Pickup Window Start</string>
+    <string name="pickup_end_hint">Pickup Window End</string>
+    <string name="select_photo">Choose Photo</string>
+    <string name="photo_selected">Photo Selected</string>
+    <string name="submit_listing">Post Food Listing</string>
+    <string name="location_auto">Current Location Attached</string>
+
+    <!-- Listing Detail -->
+    <string name="detail_title">Listing Details</string>
+    <string name="donor_label">Donated by %1$s</string>
+    <string name="pickup_window_label">Pickup Window: %1$s - %2$s</string>
+    <string name="message_donor">Message Donor</string>
+    <string name="delete_listing_button">Delete / Mark Collected</string>
+    <string name="delete_success">Food listing deleted successfully!</string>
+    <string name="reservation_success">Reserved successfully!</string>
+
+    <!-- Chat -->
+    <string name="chat_title">Chat with Donor</string>
+    <string name="type_message_hint">Type a message…</string>
+    <string name="send_button">Send</string>
+
+    <!-- Impact & Settings -->
+    <string name="impact_title">Impact Profile &amp; Settings</string>
+    <string name="user_profile_header">Account Profile</string>
+    <string name="meals_saved">Meals Saved</string>
+    <string name="co2_offset">CO2 Saved (kg)</string>
+    <string name="active_listings">Active Listings</string>
+    <string name="language_settings">App Language</string>
+    <string name="lang_english">English</string>
+    <string name="lang_zulu">isiZulu</string>
+    <string name="lang_afrikaans">Afrikaans</string>
+    <string name="offline_sync_status">Offline Mode Active: Local Room Sync</string>
+    <string name="sync_now">Sync Offline Data</string>
+    <string name="clear_database_button">Clear Database / Reset Data</string>
+    <string name="clear_database_success">Local database cleared successfully!</string>
+    <string name="logout_button">Log Out</string>
+
+    <!-- General / Errors -->
+    <string name="error_empty_fields">Please fill in all fields.</string>
+    <string name="error_login_failed">Login failed. Check your credentials.</string>
+    <string name="offline_cached_notice">Operating offline. Changes saved locally.</string>
 </resources>

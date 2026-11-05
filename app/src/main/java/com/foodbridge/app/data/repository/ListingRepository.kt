@@ -1,87 +1,226 @@
 package com.foodbridge.app.data.repository
 
+import com.foodbridge.app.data.local.ListingDao
+import com.foodbridge.app.data.local.LocalListingEntity
+import com.foodbridge.app.data.local.LocalReservationEntity
+import com.foodbridge.app.data.local.ReservationDao
 import com.foodbridge.app.data.model.FoodListing
 import com.foodbridge.app.data.model.ListingCategory
 import com.foodbridge.app.data.model.ListingStatus
 import com.foodbridge.app.data.remote.CreateListingRequest
 import com.foodbridge.app.data.remote.FoodBridgeApi
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import java.util.UUID
 
-/**
- * FR-2 (post), FR-3 (browse/filter), FR-4 (reserve).
- *
- * Reads are real-time Firestore listeners (so a reservation shows as "reserved" to every
- * browsing user instantly, per FR-4) while writes that must be atomic or rule-checked go
- * through the custom REST API — matching the "client never talks to the database directly
- * for writes" decision in the Part 1 design.
- */
 interface ListingRepository {
     fun observeListings(category: ListingCategory? = null): Flow<List<FoodListing>>
     fun observeListing(listingId: String): Flow<FoodListing?>
     suspend fun createListing(request: CreateListingRequest): Result<FoodListing>
     suspend fun reserveListing(listingId: String, recipientId: String): Result<Unit>
+    suspend fun deleteListing(listingId: String): Result<Unit>
+    suspend fun syncOfflineData(): Result<Int>
+    suspend fun clearAllData(): Result<Unit>
 }
 
 class FoodBridgeListingRepository(
     private val api: FoodBridgeApi,
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
+    private val listingDao: ListingDao? = null,
+    private val reservationDao: ReservationDao? = null
 ) : ListingRepository {
 
     private val listingsCollection by lazy { firestore.collection("listings") }
+    private val scope = CoroutineScope(Dispatchers.IO)
 
-    override fun observeListings(category: ListingCategory?): Flow<List<FoodListing>> = callbackFlow {
-        var query = listingsCollection.whereEqualTo("status", ListingStatus.AVAILABLE.name)
-        if (category != null) {
-            query = query.whereEqualTo("category", category.name)
-        }
-        val registration = query.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                close(error)
-                return@addSnapshotListener
+    override fun observeListings(category: ListingCategory?): Flow<List<FoodListing>> {
+        // Start background sync from Firestore if available
+        scope.launch {
+            runCatching {
+                var query = listingsCollection.whereEqualTo("status", ListingStatus.AVAILABLE.name)
+                if (category != null) {
+                    query = query.whereEqualTo("category", category.name)
+                }
+                query.addSnapshotListener { snapshot, error ->
+                    if (error == null && snapshot != null) {
+                        val remoteListings = snapshot.documents.mapNotNull { it.toObject(FoodListing::class.java) }
+                        if (remoteListings.isNotEmpty()) {
+                            scope.launch {
+                                listingDao?.insertListings(remoteListings.map { it.toLocalEntity(isPendingSync = false) })
+                            }
+                        }
+                    }
+                }
             }
-            val listings = snapshot?.documents?.mapNotNull { it.toObject(FoodListing::class.java) }.orEmpty()
-            trySend(listings)
         }
-        awaitClose { registration.remove() }
+
+        // Single Source of Truth: Stream from Room Local DB if available
+        if (listingDao != null) {
+            val localFlow = if (category != null) {
+                listingDao.getListingsByCategory(category.name)
+            } else {
+                listingDao.getAllListings()
+            }
+            return localFlow.map { entities ->
+                entities.map { entity -> entity.toFoodListing() }
+            }
+        }
+
+        // Fallback flow if DAO is null
+        return flow {
+            emit(emptyList())
+        }
     }
 
-    override fun observeListing(listingId: String): Flow<FoodListing?> = callbackFlow {
-        val registration = listingsCollection.document(listingId).addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                close(error)
-                return@addSnapshotListener
+    override fun observeListing(listingId: String): Flow<FoodListing?> {
+        if (listingDao != null) {
+            return listingDao.getListingById(listingId).map { entity ->
+                entity?.toFoodListing()
             }
-            trySend(snapshot?.toObject(FoodListing::class.java))
         }
-        awaitClose { registration.remove() }
+        return flow { emit(null) }
     }
 
     override suspend fun createListing(request: CreateListingRequest): Result<FoodListing> = runCatching {
-        val dto = api.createListing(request)
-        FoodListing(
-            listingId = dto.listingId,
-            donorId = dto.donorId,
-            donorName = dto.donorName,
-            title = dto.title,
-            category = runCatching { ListingCategory.valueOf(dto.category) }.getOrDefault(ListingCategory.OTHER),
-            quantity = dto.quantity,
-            description = dto.description,
-            pickupWindowStart = dto.pickupWindowStart,
-            pickupWindowEnd = dto.pickupWindowEnd,
-            status = runCatching { ListingStatus.valueOf(dto.status) }.getOrDefault(ListingStatus.AVAILABLE),
-            latitude = dto.lat,
-            longitude = dto.lng,
-            photoUrl = dto.photoUrl
+        val listingId = "listing_" + UUID.randomUUID().toString()
+        val listing = FoodListing(
+            listingId = listingId,
+            donorId = request.donorId,
+            donorName = request.donorName,
+            title = request.title,
+            category = runCatching { ListingCategory.valueOf(request.category) }.getOrDefault(ListingCategory.OTHER),
+            quantity = request.quantity,
+            description = request.description,
+            pickupWindowStart = request.pickupWindowStart,
+            pickupWindowEnd = request.pickupWindowEnd,
+            status = ListingStatus.AVAILABLE,
+            latitude = request.lat,
+            longitude = request.lng,
+            photoUrl = request.photoUrl,
+            createdAt = System.currentTimeMillis()
         )
+
+        // 1. Immediately insert into Room DB so it shows on the Home Feed list right away
+        listingDao?.insertListing(listing.toLocalEntity(isPendingSync = true))
+
+        // 2. Try pushing to remote API or Firestore in background
+        runCatching {
+            val dto = api.createListing(request)
+            val remoteListing = listing.copy(listingId = dto.listingId, photoUrl = dto.photoUrl)
+            listingDao?.deleteListing(listingId)
+            listingDao?.insertListing(remoteListing.toLocalEntity(isPendingSync = false))
+            remoteListing
+        }.getOrDefault(listing)
     }
 
     override suspend fun reserveListing(listingId: String, recipientId: String): Result<Unit> = runCatching {
-        // recipientId travels via the authenticated request context in the real Cloud Function;
-        // kept as a parameter here so the repository/ViewModel layer stays testable.
-        api.reserveListing(listingId)
+        val entity = listingDao?.getListingByIdDirect(listingId)
+        if (entity != null) {
+            val updated = entity.copy(status = ListingStatus.RESERVED.name, reservedBy = recipientId)
+            listingDao.insertListing(updated)
+        }
+        runCatching { api.reserveListing(listingId) }
+        reservationDao?.insertReservation(
+            LocalReservationEntity(
+                reservationId = UUID.randomUUID().toString(),
+                listingId = listingId,
+                recipientId = recipientId,
+                reservedAt = System.currentTimeMillis(),
+                isPendingSync = true
+            )
+        )
         Unit
+    }
+
+    override suspend fun deleteListing(listingId: String): Result<Unit> = runCatching {
+        listingDao?.deleteListing(listingId)
+        runCatching {
+            listingsCollection.document(listingId).delete()
+        }
+        Unit
+    }
+
+    override suspend fun clearAllData(): Result<Unit> = runCatching {
+        listingDao?.clearAllListings()
+        reservationDao?.clearAllReservations()
+        Unit
+    }
+
+    override suspend fun syncOfflineData(): Result<Int> = runCatching {
+        var syncedCount = 0
+        listingDao?.getPendingSyncListings()?.forEach { entity ->
+            val request = CreateListingRequest(
+                donorId = entity.donorId,
+                donorName = entity.donorName,
+                title = entity.title,
+                category = entity.category,
+                quantity = entity.quantity,
+                description = entity.description,
+                pickupWindowStart = entity.pickupWindowStart,
+                pickupWindowEnd = entity.pickupWindowEnd,
+                lat = entity.latitude,
+                lng = entity.longitude,
+                photoUrl = entity.photoUrl
+            )
+            runCatching {
+                api.createListing(request)
+                listingDao?.insertListing(entity.copy(isPendingSync = false))
+                syncedCount++
+            }
+        }
+        reservationDao?.getPendingSyncReservations()?.forEach { res ->
+            runCatching {
+                api.reserveListing(res.listingId)
+                reservationDao?.deleteReservation(res.reservationId)
+                syncedCount++
+            }
+        }
+        syncedCount
+    }
+
+    private fun FoodListing.toLocalEntity(isPendingSync: Boolean): LocalListingEntity {
+        return LocalListingEntity(
+            listingId = listingId,
+            donorId = donorId,
+            donorName = donorName,
+            title = title,
+            category = category.name,
+            quantity = quantity,
+            description = description,
+            pickupWindowStart = pickupWindowStart,
+            pickupWindowEnd = pickupWindowEnd,
+            status = status.name,
+            latitude = latitude,
+            longitude = longitude,
+            photoUrl = photoUrl,
+            reservedBy = reservedBy,
+            createdAt = createdAt,
+            isPendingSync = isPendingSync
+        )
+    }
+
+    private fun LocalListingEntity.toFoodListing(): FoodListing {
+        return FoodListing(
+            listingId = listingId,
+            donorId = donorId,
+            donorName = donorName,
+            title = title,
+            category = runCatching { ListingCategory.valueOf(category) }.getOrDefault(ListingCategory.OTHER),
+            quantity = quantity,
+            description = description,
+            pickupWindowStart = pickupWindowStart,
+            pickupWindowEnd = pickupWindowEnd,
+            status = runCatching { ListingStatus.valueOf(status) }.getOrDefault(ListingStatus.AVAILABLE),
+            latitude = latitude,
+            longitude = longitude,
+            photoUrl = photoUrl,
+            reservedBy = reservedBy,
+            createdAt = createdAt
+        )
     }
 }

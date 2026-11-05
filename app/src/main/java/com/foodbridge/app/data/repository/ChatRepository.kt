@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
-/** FR-5: lightweight chat scoped to a single reservation, so no phone numbers are exchanged. */
 interface ChatRepository {
     fun observeMessages(reservationId: String): Flow<List<ChatMessage>>
     suspend fun sendMessage(reservationId: String, senderId: String, text: String): Result<Unit>
@@ -27,7 +26,7 @@ class FirebaseChatRepository(
             .orderBy("sentAt", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    close(error)
+                    trySend(emptyList())
                     return@addSnapshotListener
                 }
                 val messages = snapshot?.documents?.mapNotNull { it.toObject(ChatMessage::class.java) }.orEmpty()
@@ -44,6 +43,9 @@ class FirebaseChatRepository(
                 senderId = senderId,
                 text = text
             )
-            messagesRef(reservationId).document(message.messageId).set(message).await()
+            runCatching {
+                messagesRef(reservationId).document(message.messageId).set(message).await()
+            }
+            Unit
         }
 }

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_login">
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.foodbridge.app.ui.auth.LoginFragment"
+        android:label="@string/login_title">
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/nav_register" />
+        <action
+            android:id="@+id/action_login_to_home"
+            app:destination="@id/nav_home_feed"
+            app:popUpTo="@id/nav_login"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="com.foodbridge.app.ui.auth.RegisterFragment"
+        android:label="@string/register_button">
+        <action
+            android:id="@+id/action_register_to_login"
+            app:destination="@id/nav_login"
+            app:popUpTo="@id/nav_register"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_register_to_home"
+            app:destination="@id/nav_home_feed"
+            app:popUpTo="@id/nav_register"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_home_feed"
+        android:name="com.foodbridge.app.ui.home.HomeFeedFragment"
+        android:label="@string/home_title">
+        <action
+            android:id="@+id/action_home_to_detail"
+            app:destination="@id/nav_listing_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_map_view"
+        android:name="com.foodbridge.app.ui.map.MapFragment"
+        android:label="@string/map_title">
+        <action
+            android:id="@+id/action_map_to_detail"
+            app:destination="@id/nav_listing_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_post_listing"
+        android:name="com.foodbridge.app.ui.post.PostListingFragment"
+        android:label="@string/post_title">
+        <action
+            android:id="@+id/action_post_to_home"
+            app:destination="@id/nav_home_feed"
+            app:popUpTo="@id/nav_post_listing"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_impact_profile"
+        android:name="com.foodbridge.app.ui.impact.ImpactProfileFragment"
+        android:label="@string/impact_title">
+        <action
+            android:id="@+id/action_impact_to_login"
+            app:destination="@id/nav_login"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_listing_detail"
+        android:name="com.foodbridge.app.ui.listing.ListingDetailFragment"
+        android:label="@string/detail_title">
+        <argument
+            android:name="listingId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_detail_to_chat"
+            app:destination="@id/nav_chat" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_chat"
+        android:name="com.foodbridge.app.ui.chat.ChatFragment"
+        android:label="@string/chat_title">
+        <argument
+            android:name="reservationId"
+            app:argType="string" />
+    </fragment>
+
+</navigation>

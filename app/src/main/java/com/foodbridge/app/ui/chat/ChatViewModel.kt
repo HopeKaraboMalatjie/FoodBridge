@@ -1,6 +1,7 @@
 package com.foodbridge.app.ui.chat
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.foodbridge.app.data.model.ChatMessage
 import com.foodbridge.app.data.repository.ChatRepository
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/** FR-5: in-app messaging, scoped to a single reservation. */
 class ChatViewModel(
     private val repository: ChatRepository,
     private val reservationId: String
@@ -27,6 +27,16 @@ class ChatViewModel(
         if (text.isBlank()) return
         viewModelScope.launch {
             repository.sendMessage(reservationId, senderId, text)
+        }
+    }
+
+    class Factory(
+        private val repository: ChatRepository,
+        private val reservationId: String
+    ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ChatViewModel(repository, reservationId) as T
         }
     }
 }

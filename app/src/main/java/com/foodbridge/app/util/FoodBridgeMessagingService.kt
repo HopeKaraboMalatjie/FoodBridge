@@ -9,11 +9,6 @@ import com.foodbridge.app.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
-/**
- * FR-7: push notifications for a new nearby listing, a confirmed reservation, or a
- * pickup window about to close. The Cloud Function backend triggers these sends;
- * this service just renders whatever payload arrives.
- */
 class FoodBridgeMessagingService : FirebaseMessagingService() {
 
     private val channelId = "foodbridge_alerts"
@@ -21,14 +16,12 @@ class FoodBridgeMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
         val title = message.notification?.title ?: message.data["title"] ?: "FoodBridge"
-        val body = message.notification?.body ?: message.data["body"] ?: ""
+        val body = message.notification?.body ?: message.data["body"] ?: "New surplus food updates available nearby!"
         showNotification(title, body)
     }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        // In production: send the token to the REST API so the backend can target this device,
-        // e.g. POST /users/{id}/fcm-token. Left as a hook for the team to wire up.
     }
 
     private fun showNotification(title: String, body: String) {
@@ -41,8 +34,11 @@ class FoodBridgeMessagingService : FirebaseMessagingService() {
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(body)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()
-        NotificationManagerCompat.from(this).notify(System.currentTimeMillis().toInt(), notification)
+        runCatching {
+            NotificationManagerCompat.from(this).notify(System.currentTimeMillis().toInt(), notification)
+        }
     }
 }

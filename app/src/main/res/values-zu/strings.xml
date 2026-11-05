@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FoodBridge</string>
+    <string name="maps_api_key">AIzaSyCKLM-IjGV5k15xv290HnywXLWZiru0tMM</string>
+    <string name="default_web_client_id">1083920192301-mockclientid.apps.googleusercontent.com</string>
+
+    <!-- Auth -->
+    <string name="login_title">Siyakwamukela kwi-FoodBridge</string>
+    <string name="login_subtitle">Xhuma ukudla okungaphezu kwaso nemiphakathi</string>
+    <string name="email_hint">Ikheli le-Imeyili</string>
+    <string name="password_hint">Iphasiwedi</string>
+    <string name="name_hint">Amagama Aphelele</string>
+    <string name="login_button">Ngena</string>
+    <string name="google_sso_button">Ngena nge-Google</string>
+    <string name="register_button">Dala I-akhawunti</string>
+    <string name="no_account_prompt">Awunayo i-akhawunti? Bhalisa</string>
+    <string name="have_account_prompt">Ingabe usuvele unayo i-akhawunti? Ngena</string>
+    <string name="role_prompt">Khetha Inkinga</string>
+    <string name="role_donor">Umnikeli (Iresitorenti / Isitolo)</string>
+    <string name="role_recipient">Umunye (Ikhaya / Umuntu)</string>
+
+    <!-- Home Feed -->
+    <string name="home_title">Ukudla Okutholakala Kulokhu</string>
+    <string name="search_hint">Cinga ukudla…</string>
+    <string name="all_categories">Kokonke</string>
+    <string name="cat_prepared">Ukudla Okuphekiwe</string>
+    <string name="cat_produce">Izithelo Nemifino</string>
+    <string name="cat_bakery">Ikhekhe Nesinkwa</string>
+    <string name="cat_canned">Ukudla Okusemakosini</string>
+    <string name="no_listings">Akukho ukudla okutholakala okwamanje.</string>
+    <string name="expiry_label">Landa ngaphambi kwa: %1$s</string>
+    <string name="distance_label">%1$.1f km ukuhamba</string>
+    <string name="reserve_now">Bhukha Ukudla</string>
+    <string name="status_available">Kuyatholakala</string>
+    <string name="status_reserved">Kubhukhiwe</string>
+
+    <!-- Map View -->
+    <string name="map_title">Imaphi Yokudla Eduzane</string>
+
+    <!-- Post Listing -->
+    <string name="post_title">Nikela Ukudla Okusele</string>
+    <string name="listing_title_hint">Isihloko Sakho Sokudla</string>
+    <string name="category_hint">Ingxenye</string>
+    <string name="quantity_hint">Inani (isb. 5 kg / 10 izidlo)</string>
+    <string name="description_hint">Incazelo nemicabango yokudla</string>
+    <string name="pickup_start_hint">Ukuqala Kwesikhathi Sokulanda</string>
+    <string name="pickup_end_hint">Ukugcina Kwesikhathi Sokulanda</string>
+    <string name="select_photo">Khetha Isithombe</string>
+    <string name="photo_selected">Isithombe Sikhethiwe</string>
+    <string name="submit_listing">Thumela Ukudla</string>
+    <string name="location_auto">Indawo Yamanje Ifakiwe</string>
+
+    <!-- Listing Detail -->
+    <string name="detail_title">Imininingwane Ukudla</string>
+    <string name="donor_label">Kunikelwe ngu-%1$s</string>
+    <string name="pickup_window_label">Isikhathi Sokulanda: %1$s - %2$s</string>
+    <string name="message_donor">Thumelela Umnikeli Umlayezo</string>
+    <string name="delete_listing_button">Susa Ukudla Kokuqoqiwe</string>
+    <string name="delete_success">Ukudla kususwe ngempumelelo!</string>
+    <string name="reservation_success">Kubhukhiwe ngokugcwele!</string>
+
+    <!-- Chat -->
+    <string name="chat_title">Xoxa noMnikeli</string>
+    <string name="type_message_hint">Bhala umlayezo…</string>
+    <string name="send_button">Thumela</string>
+
+    <!-- Impact & Settings -->
+    <string name="impact_title">Umphumela nezilungiselelo</string>
+    <string name="user_profile_header">I-Akhawunti Yakho</string>
+    <string name="meals_saved">Izidlo Ezisindisiwe</string>
+    <string name="co2_offset">CO2 Esindisiwe (kg)</string>
+    <string name="active_listings">Ukudla Okusebenzayo</string>
+    <string name="language_settings">Ulimi Lwe-App</string>
+    <string name="lang_english">IsiNgisi (English)</string>
+    <string name="lang_zulu">isiZulu</string>
+    <string name="lang_afrikaans">isiBhunu (Afrikaans)</string>
+    <string name="offline_sync_status">Imodi Engasebenzi Ku-inthanethi: Isync Ye-Room Yamukelwe</string>
+    <string name="sync_now">Vumelanisa Idatha Yendawo</string>
+
+    <string name="clear_database_button">Susa Idatha Ye-Database</string>
+    <string name="clear_database_success">I-database isusiwe ngempumelelo!</string>
+
+    <string name="logout_button">Phuma</string>
+
+    <!-- General / Errors -->
+    <string name="error_empty_fields">Sicela ugcwalise zonke izindawo.</string>
+    <string name="error_login_failed">Ukungena kuhlulekile. Hlola imininingwane yakho.</string>
+    <string name="offline_cached_notice">Isebenza ungaxhunyiwe ku-inthanethi. Izinguquko zigciniwe endaweni.</string>
+</resources>

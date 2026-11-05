@@ -1,6 +1,7 @@
 package com.foodbridge.app.ui.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.foodbridge.app.data.model.FoodListing
 import com.foodbridge.app.data.model.ListingCategory
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-/** FR-3: browse and filter listings, live-updated from Firestore. */
 class HomeViewModel(private val repository: ListingRepository) : ViewModel() {
 
     private val _selectedCategory = MutableStateFlow<ListingCategory?>(null)
@@ -29,5 +29,12 @@ class HomeViewModel(private val repository: ListingRepository) : ViewModel() {
 
     fun setCategory(category: ListingCategory?) {
         _selectedCategory.value = category
+    }
+
+    class Factory(private val repository: ListingRepository) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return HomeViewModel(repository) as T
+        }
     }
 }
