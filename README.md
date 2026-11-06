@@ -101,3 +101,6 @@ Generative AI (Claude by Anthropic and Google Gemini in Android Studio) was util
 4. **CI/CD Pipeline Setup:** AI assisted in configuring the GitHub Actions workflow script (`.github/workflows/build.yml`) to automate unit testing and build APK artifacts on GitHub.
 
 All AI-generated code was thoroughly reviewed, tested, debugged, and integrated by the development team to ensure compliance with project requirements.
+
+## APP IMAGES
+Link to APP images: https://advtechonline-my.sharepoint.com/:u:/r/personal/st10448234_rcconnect_edu_za/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fst10448234%5Frcconnect%5Fedu%5Fza%2FDocuments%2FScreenshot%5F20261106%5F201348%5Fcom%5Ffoodbridge%5Fapp%5FMainActivity%2Ezip&parent=%2Fpersonal%2Fst10448234%5Frcconnect%5Fedu%5Fza%2FDocuments&share=cQqLYP2zYV4HT41K67X82v60EgUC%5FxhCwMGiZrEjBEPhPRRgNw 
